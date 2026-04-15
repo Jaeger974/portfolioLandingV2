@@ -29,8 +29,8 @@ async function startServer() {
       id: 2,
       title: "SparUp Matchmaking App",
       description: "A social networking app for connecting people with similar interests and goals.",
-      tags: ["React Native", "Node.js", "MongoDB", "Socket.IO"],
-      githubUrl: "https://github.com/username/sparup",
+      tags: ["Python", "Node.js", "MongoDB", "Socket.IO"],
+      githubUrl: "https://github.com/Jaeger974/SparUpProj2.git",
       liveUrl: "https://sparup.netlify.app",
       image: "/static_images/SparUphomepagepreview.JPG"
     },
