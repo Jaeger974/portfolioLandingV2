@@ -2,6 +2,8 @@ import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
 import { createServer as createViteServer } from "vite";
+import { sendContactEmail } from "./contactemailer/mailer.js";
+
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -32,16 +34,16 @@ async function startServer() {
       tags: ["Python", "Node.js", "MongoDB", "Socket.IO"],
       githubUrl: "https://github.com/Jaeger974/SparUpProj2.git",
       liveUrl: "https://sparup.netlify.app",
-      image: "/static_images/SparUphomepagepreview.JPG"
+      image: "/static_images/Workinprogress_img.JPG"
     },
     {
       id: 3,
-      title: "Weather Sphere",
-      description: "A beautiful 3D weather application with global coverage and interactive maps.",
-      tags: ["React", "Three.js", "OpenWeather API"],
-      githubUrl: "https://github.com/username/weather-sphere",
-      liveUrl: "https://weather-sphere.netlify.app",
-      image: "https://picsum.photos/seed/weather/800/600"
+      title: "TBC",
+      description: "Project 3 is in development and will be added soon. Stay tuned for updates on this exciting new project!",
+      tags: ["TBC"],
+      githubUrl: "https://github.com/Jaeger974",
+      liveUrl: "https://github.com/Jaeger974",
+      image: "/static_images/Workinprogress_img.JPG"
     }
   ];
 
@@ -52,13 +54,29 @@ async function startServer() {
 
   // API Route for Contact Form (Example)
   app.use(express.json());
-  app.post("/api/contact", (req, res) => {
-    console.log("Contact Form Submission:", req.body);
-    // In a real app, you'd send an email here
+  app.post("/api/contact", async (req, res) => {
+  console.log("Contact Form Submission:", req.body);
+  try {
+    const { name, email, message } = req.body;
+
+    if (!name || !email || !message) {
+      return res.status(400).json({ success: false, message: "Missing fields" });
+    }
+    
     setTimeout(() => {
       res.json({ success: true, message: "Message sent successfully!" });
     }, 1000);
-  });
+
+    res.json({
+      success: true,
+      message: "Message sent successfully!",
+
+    });
+  } catch (err) {
+    console.error("Contact form email error:", err);
+    res.status(500).json({ success: false, message: "Failed to send message" });
+  }
+});
 
   // Vite middleware for development
   if (process.env.NODE_ENV !== "production") {
