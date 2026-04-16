@@ -1,10 +1,17 @@
 import express from "express";
 import path from "path";
+import rateLimit from "express-rate-limit";
+import dotenv from "dotenv";
+dotenv.config();
+
 import { fileURLToPath } from "url";
 import { createServer as createViteServer } from "vite";
 import { sendContactEmail } from "./contactemailer/mailer.js";
-import rateLimit from "express-rate-limit";
 
+console.log("SMTP_HOST:", process.env.SMTP_HOST);
+console.log("SMTP_PORT:", process.env.SMTP_PORT);
+console.log("SMTP_USER:", process.env.SMTP_USER);
+console.log("SMTP_PASS:", process.env.SMTP_PASS);
 
 
 const __filename = fileURLToPath(import.meta.url);
@@ -70,11 +77,13 @@ async function startServer() {
 
   // API Route for Contact Form (Example)
   app.use(express.json());
-  app.post("/api/contact", contactLimiter, async (req, res) => {
+ app.post("/api/contact", contactLimiter, async (req, res) => {
   console.log("Contact Form Submission:", req.body);
+
   try {
     const { name, email, message, website } = req.body;
 
+    // Honeypot
     if (website && website.trim() !== "") {
       console.log("Bot detected — honeypot triggered:", website);
       return res.status(400).json({
@@ -83,25 +92,25 @@ async function startServer() {
       });
     }
 
-
     if (!name || !email || !message) {
       return res.status(400).json({ success: false, message: "Missing fields" });
     }
 
+    // Send the email
     await sendContactEmail({ name, email, message });
-    
-    setTimeout(() => {
-      res.json({ success: true, message: "Message sent successfully!" });
-    }, 1000);
 
-    res.json({
+    // ONE response only
+    return res.json({
       success: true,
-      message: "Message sent successfully!",
-
+      message: "Message sent successfully!"
     });
+
   } catch (err) {
     console.error("Contact form email error:", err);
-    res.status(500).json({ success: false, message: "Failed to send message" });
+    return res.status(500).json({
+      success: false,
+      message: "Failed to send message"
+    });
   }
 });
 

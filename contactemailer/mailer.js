@@ -1,16 +1,25 @@
 import nodemailer from "nodemailer";
+import dotenv from "dotenv";
+dotenv.config();
 
 export async function sendContactEmail({ name, email, message }) {
   // Use Ethereal for dev OR your real SMTP credentials
   const transporter = nodemailer.createTransport({
     host: process.env.SMTP_HOST,
-    port: process.env.SMTP_PORT,
+    port: Number(process.env.SMTP_PORT),
     secure: false,
     auth: {
       user: process.env.SMTP_USER,
       pass: process.env.SMTP_PASS
-    }
-  });
+    },
+      tls: {
+    rejectUnauthorized: false,        // <-- REQUIRED for Outlook on localhost
+    minVersion: "TLSv1"
+  },
+family: 4 
+});
+
+try {
 
   const info = await transporter.sendMail({
     from: `"Portfolio Contact Form" <${process.env.SMTP_USER}>`,
@@ -34,7 +43,10 @@ ${message}
     `
   });
 
-  // Ethereal preview URL (dev only)
-  const previewUrl = nodemailer.getTestMessageUrl(info);
-  return { info, previewUrl };
+
+  return { info };
+} catch (err) {
+  console.error("Email send error:", err);
+  throw err;
 }
+};
