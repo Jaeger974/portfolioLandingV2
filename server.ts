@@ -3,6 +3,8 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { createServer as createViteServer } from "vite";
 import { sendContactEmail } from "./contactemailer/mailer.js";
+import rateLimit from "express-rate-limit";
+
 
 
 const __filename = fileURLToPath(import.meta.url);
@@ -15,6 +17,20 @@ async function startServer() {
   // Set EJS as the view engine
   app.set("view engine", "ejs");
   app.set("views", path.join(__dirname, "views"));
+
+
+  // rate limiter for contact form to prevent abuse
+  const contactLimiter = rateLimit({
+  windowMs: 60 * 1000, // 1 minute
+  max: 5,              // limit each IP to 5 requests per minute
+  message: {
+    success: false,
+    message: "Too many requests. Please try again later."
+  },
+  standardHeaders: true,
+  legacyHeaders: false
+});
+
 
   // Mock Data for the Portfolio
   const projects = [
@@ -54,14 +70,25 @@ async function startServer() {
 
   // API Route for Contact Form (Example)
   app.use(express.json());
-  app.post("/api/contact", async (req, res) => {
+  app.post("/api/contact", contactLimiter, async (req, res) => {
   console.log("Contact Form Submission:", req.body);
   try {
-    const { name, email, message } = req.body;
+    const { name, email, message, website } = req.body;
+
+    if (website && website.trim() !== "") {
+      console.log("Bot detected — honeypot triggered:", website);
+      return res.status(400).json({
+        success: false,
+        message: "Invalid submission"
+      });
+    }
+
 
     if (!name || !email || !message) {
       return res.status(400).json({ success: false, message: "Missing fields" });
     }
+
+    await sendContactEmail({ name, email, message });
     
     setTimeout(() => {
       res.json({ success: true, message: "Message sent successfully!" });

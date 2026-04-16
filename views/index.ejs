@@ -218,6 +218,10 @@
                             </div>
                             <div class="card-content">
                                 <form id="contact-form" class="form">
+                                    <div style="display:none;">
+                                        <label>Leave this field empty</label>
+                                        <input type="text" name="website" tabindex="-1" autocomplete="off">
+                                    </div>
                                     <div class="form-row">
                                         <div class="form-group">
                                             <label class="form-label">Name</label>
@@ -272,5 +276,23 @@
 
     <!-- Client-side JavaScript -->
     <script src="/js/main.js"></script>
+    <script>
+       document.getElementById("contact-form").addEventListener("submit", async (e) => {
+        e.preventDefault(); // stop the page from reloading
+
+        
+        const formData = Object.fromEntries(new FormData(e.target));
+
+        // sending to my backend
+        const res = await fetch("/api/contact", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(formData)
+        });
+
+        const data = await res.json();
+        console.log(data);
+        });
+    </script>
 </body>
 </html>
