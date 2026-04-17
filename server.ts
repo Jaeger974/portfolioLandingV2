@@ -1,8 +1,9 @@
+import dotenv from "dotenv";
+dotenv.config();
 import express from "express";
 import path from "path";
 import rateLimit from "express-rate-limit";
-import dotenv from "dotenv";
-dotenv.config();
+
 
 import { fileURLToPath } from "url";
 import { createServer as createViteServer } from "vite";
@@ -20,6 +21,12 @@ const __dirname = path.dirname(__filename);
 async function startServer() {
   const app = express();
   const PORT = 3000;
+
+  console.log("Loaded ENV:", {
+  SMTP_HOST: process.env.SMTP_HOST,
+  SMTP_USER: process.env.SMTP_USER,
+  SMTP_PASS: process.env.SMTP_PASS ? "OK" : "MISSING"
+});
 
   // Set EJS as the view engine
   app.set("view engine", "ejs");
@@ -79,6 +86,7 @@ async function startServer() {
   app.use(express.json());
  app.post("/api/contact", contactLimiter, async (req, res) => {
   console.log("Contact Form Submission:", req.body);
+
 
   try {
     const { name, email, message, website } = req.body;
