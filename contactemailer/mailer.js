@@ -4,20 +4,22 @@ dotenv.config();
 
 export async function sendContactEmail({ name, email, message }) {
   // Use Ethereal for dev OR your real SMTP credentials
-  const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST,
-    port: Number(process.env.SMTP_PORT),
-    secure: false,
-    auth: {
-      user: process.env.SMTP_USER,
-      pass: process.env.SMTP_PASS
-    },
-      tls: {
-    rejectUnauthorized: false,        // <-- REQUIRED for Outlook on localhost
+const transporter = nodemailer.createTransport({
+  host: process.env.SMTP_HOST,        // smtp-relay.brevo.com
+  port: Number(process.env.SMTP_PORT),// 587
+  secure: false,                      // STARTTLS
+  auth: {
+    user: process.env.SMTP_USER,      // your Brevo login email
+    pass: process.env.SMTP_PASS       // your Brevo SMTP key
+  },
+  tls: {
+    rejectUnauthorized: false,
     minVersion: "TLSv1"
   },
-family: 4 
+  family: 4
+
 });
+
 
 try {
 
