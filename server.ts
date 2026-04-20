@@ -9,11 +9,6 @@ import { fileURLToPath } from "url";
 import { createServer as createViteServer } from "vite";
 import { sendContactEmail } from "./contactemailer/mailer.ts";
 
-console.log("SMTP_HOST:", process.env.SMTP_HOST);
-console.log("SMTP_PORT:", process.env.SMTP_PORT);
-console.log("SMTP_USER:", process.env.SMTP_USER);
-
-
   // rate limiter for contact form to prevent abuse
   const contactLimiter = rateLimit({
   windowMs: 60 * 1000, // 1 minute
@@ -111,7 +106,7 @@ app.post("/api/contact", contactLimiter, async (req, res) => {
       console.error("Contact form email error:", err);
       return res
         .status(500)
-        .json({ success: false, message: "Failed to send message" });
+      .json({ success: false, message: "Failed to send message" });
     }
   });
 

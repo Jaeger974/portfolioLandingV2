@@ -12,10 +12,8 @@ export async function sendContactEmail({
   email: string;
   message: string;
 }) {
-  // Optional: debug
-  console.log("SMTP_USER:", process.env.SMTP_USER);
-  console.log("SMTP_HOST:", process.env.SMTP_HOST);
-
+ 
+  
   const transporter = nodemailer.createTransport({
     host: process.env.SMTP_HOST,
     port: Number(process.env.SMTP_PORT),
