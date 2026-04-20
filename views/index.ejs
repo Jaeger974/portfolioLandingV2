@@ -277,22 +277,41 @@
     <!-- Client-side JavaScript -->
     <script src="/js/main.js"></script>
     <script>
-       document.getElementById("contact-form").addEventListener("submit", async (e) => {
-        e.preventDefault(); // stop the page from reloading
+  document
+    .getElementById("contact-form")
+    .addEventListener("submit", async (e) => {
+      e.preventDefault();
 
-        
-        const formData = Object.fromEntries(new FormData(e.target));
+      const form = e.target;
+      const formData = Object.fromEntries(new FormData(form));
 
-        // sending to my backend
+      const btn = document.getElementById("submit-btn");
+      btn.disabled = true;
+
+      try {
         const res = await fetch("/api/contact", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(formData)
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData)
         });
 
         const data = await res.json();
-        console.log(data);
-        });
-    </script>
+        console.log("Response:", data);
+
+        if (data.success) {
+          form.reset();
+          alert("Message sent successfully!");
+        } else {
+          alert(data.message || "Something went wrong");
+        }
+      } catch (err) {
+        console.error(err);
+        alert("Failed to send message");
+      } finally {
+        btn.disabled = false;
+      }
+    });
+</script>
+
 </body>
 </html>

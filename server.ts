@@ -1,36 +1,17 @@
 import dotenv from "dotenv";
 dotenv.config();
+
 import express from "express";
 import path from "path";
 import rateLimit from "express-rate-limit";
 
-
 import { fileURLToPath } from "url";
 import { createServer as createViteServer } from "vite";
-import { sendContactEmail } from "./contactemailer/mailer.js";
+import { sendContactEmail } from "./contactemailer/mailer.ts";
 
 console.log("SMTP_HOST:", process.env.SMTP_HOST);
 console.log("SMTP_PORT:", process.env.SMTP_PORT);
 console.log("SMTP_USER:", process.env.SMTP_USER);
-console.log("SMTP_PASS:", process.env.SMTP_PASS);
-
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-async function startServer() {
-  const app = express();
-  const PORT = 3000;
-
-  console.log("Loaded ENV:", {
-  SMTP_HOST: process.env.SMTP_HOST,
-  SMTP_USER: process.env.SMTP_USER,
-  SMTP_PASS: process.env.SMTP_PASS ? "OK" : "MISSING"
-});
-
-  // Set EJS as the view engine
-  app.set("view engine", "ejs");
-  app.set("views", path.join(__dirname, "views"));
 
 
   // rate limiter for contact form to prevent abuse
@@ -45,6 +26,19 @@ async function startServer() {
   legacyHeaders: false
 });
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+
+  const app = express();
+  const PORT = 3000;
+
+  // Set EJS as the view engine
+  app.set("view engine", "ejs");
+  app.set("views", path.join(__dirname, "views"));
+
+
+async function startServer() {
 
   // Mock Data for the Portfolio
   const projects = [
@@ -83,44 +77,44 @@ async function startServer() {
   ];
 
   // API Route for Contact Form (Example)
-  app.use(express.json());
- app.post("/api/contact", contactLimiter, async (req, res) => {
-  console.log("Contact Form Submission:", req.body);
+app.use(express.json());
 
 
-  try {
-    const { name, email, message, website } = req.body;
+app.post("/api/contact", contactLimiter, async (req, res) => {
+    console.log("Contact Form Submission:", req.body);
 
-    // Honeypot
-    if (website && website.trim() !== "") {
-      console.log("Bot detected — honeypot triggered:", website);
-      return res.status(400).json({
-        success: false,
-        message: "Invalid submission"
+    try {
+      const { name, email, message, website } = req.body;
+
+      // Honeypot
+      if (website && website.trim() !== "") {
+        console.log("Bot detected — honeypot triggered:", website);
+        return res.status(400).json({
+          success: false,
+          message: "Invalid submission"
+        });
+      }
+
+      if (!name || !email || !message) {
+        return res
+          .status(400)
+          .json({ success: false, message: "Missing fields" });
+      }
+
+      await sendContactEmail({ name, email, message });
+
+      return res.json({
+        success: true,
+        message: "Message sent successfully!"
       });
+    } catch (err) {
+      console.error("Contact form email error:", err);
+      return res
+        .status(500)
+        .json({ success: false, message: "Failed to send message" });
     }
+  });
 
-    if (!name || !email || !message) {
-      return res.status(400).json({ success: false, message: "Missing fields" });
-    }
-
-    // Send the email
-    await sendContactEmail({ name, email, message });
-
-    // ONE response only
-    return res.json({
-      success: true,
-      message: "Message sent successfully!"
-    });
-
-  } catch (err) {
-    console.error("Contact form email error:", err);
-    return res.status(500).json({
-      success: false,
-      message: "Failed to send message"
-    });
-  }
-});
 
   // Vite middleware for development
   if (process.env.NODE_ENV !== "production") {
