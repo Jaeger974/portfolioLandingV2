@@ -55,7 +55,7 @@ async function startServer() {
       tags: ["Python", "Node.js", "MongoDB", "Socket.IO"],
       githubUrl: "https://github.com/Jaeger974/SparUpProj2.git",
       liveUrl: "https://sparup.netlify.app",
-      image: "/static_images/Workinprogress_img.JPG"
+      image: "/static_images/Workinprogress.JPG"
     },
     {
       id: 3,
