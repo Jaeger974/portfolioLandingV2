@@ -55,7 +55,7 @@ async function startServer() {
       tags: ["Python", "Node.js", "MongoDB", "Socket.IO"],
       githubUrl: "https://github.com/Jaeger974/SparUpProj2.git",
       liveUrl: "https://sparup.netlify.app",
-      image: "/static_images/Workinprogress.JPG"
+      image: "/static_images/Workinprogress.jpg"
     },
     {
       id: 3,
@@ -64,7 +64,7 @@ async function startServer() {
       tags: ["TBC"],
       githubUrl: "https://github.com/Jaeger974",
       liveUrl: "https://github.com/Jaeger974",
-      image: "/static_images/Workinprogress_img.JPG"
+      image: "/static_images/Workinprogress_img.jpg"
     }
   ];
 
