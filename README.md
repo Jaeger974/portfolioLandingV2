@@ -3,7 +3,7 @@
 </div>
 
 James Mateer — Portfolio Landing Page
-Live Site: https://jsamportfolio.netlify.app/
+Live Site: https://james-portfolio-bdxu.onrender.com/
 A modern, responsive portfolio website built to showcase my projects, technical skills, and professional experience as a junior web developer. This site serves as both a personal brand hub and a demonstration of my ability to design, build, and deploy production‑ready web applications.
 
 🚀 Overview
