@@ -48,7 +48,7 @@ Frontend
   🎨 Clean, Modern UI
 - Custom CSS
 - Subtle animations
-- Professional, recruiter‑friendly layout
+- Professional, recruiter‑friendly layout     
   ⚡ Fast & Lightweight
 - No heavy frameworks
 - Minimal dependencies
