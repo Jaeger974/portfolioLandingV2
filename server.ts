@@ -64,7 +64,7 @@ async function startServer() {
       tags: ["TBC"],
       githubUrl: "https://github.com/Jaeger974",
       liveUrl: "https://github.com/Jaeger974",
-      image: "/static_images/Workinprogress_img.jpg"
+      image: "/static_images/Workinprogress.jpg"
     }
   ];
 
