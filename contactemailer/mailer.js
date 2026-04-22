@@ -1,32 +1,32 @@
 import dotenv from "dotenv";
 dotenv.config();
+
 import nodemailer from "nodemailer";
 
-
-export async function sendContactEmail({ name, email, message }) {
-  // Use Ethereal for dev OR your real SMTP credentials
-const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST,
-  port: Number(process.env.SMTP_PORT),
-  secure: false,
-  auth: {
-    user: process.env.SMTP_USER,  // Brevo login email
-    pass: process.env.SMTP_PASS   // Brevo SMTP key
-  },
-  tls: {
+export async function sendContactEmail({
+  name,
+  email,
+  message
+}) {
+ 
+  
+  const transporter = nodemailer.createTransport({
+    host: process.env.SMTP_HOST,
+    port: Number(process.env.SMTP_PORT),
+    secure: false, // STARTTLS on 587
+    auth: {
+      user: process.env.SMTP_USER,
+      pass: process.env.SMTP_PASS
+    },
+    tls: {
     rejectUnauthorized: false
-  },
-  family: 4
-});
+  }
 
-console.log("SMTP_USER:", process.env.SMTP_USER);
-console.log("SMTP_PASS length:", process.env.SMTP_PASS.length);
-
-try {
+  });
 
   const info = await transporter.sendMail({
-    from: `"Portfolio Contact Form" <${process.env.SMTP_USER}>`,
-    to: process.env.CONTACT_RECEIVER, // your real email
+    from: `"Portfolio Contact Form" <dynamic.kandj@gmail.com>`,
+    to: process.env.CONTACT_RECEIVER,
     subject: `New Contact Form Message from ${name}`,
     html: `
       <h2>New Contact Form Submission</h2>
@@ -46,10 +46,6 @@ ${message}
     `
   });
 
-
-  return { info };
-} catch (err) {
-  console.error("Email send error:", err);
-  throw err;
+  console.log("Brevo message sent, id:", info.messageId);
+  return info;
 }
-};

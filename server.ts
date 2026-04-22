@@ -4,8 +4,6 @@ dotenv.config();
 import express from "express";
 import path from "path";
 import rateLimit from "express-rate-limit";
-import { SpeedInsights } from "@vercel/speed-insights/react"
-import { Analytics } from "@vercel/analytics/next"
 
 import { fileURLToPath } from "url";
 import { createServer as createViteServer } from "vite";

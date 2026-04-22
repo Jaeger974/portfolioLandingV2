@@ -276,39 +276,7 @@
 
     <!-- Client-side JavaScript -->
     <script src="/js/main.js"></script>
-    <script>
-     document.getElementById("contact-form").addEventListener("submit", async (e) => {
-      e.preventDefault();
 
-      const form = e.target;
-      const formData = Object.fromEntries(new FormData(form));
-
-      const btn = document.getElementById("submit-btn");
-      btn.disabled = true;
-
-      try {
-        const res = await fetch("/api/contact", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(formData)
-        });
-
-        const data = await res.json();
-        console.log("Response:", data);
-
-        if (data.success) {
-          form.reset();
-        } else {
-          alert(data.message || "Something went wrong");
-        }
-      } catch (err) {
-        console.error(err);
-        alert("Failed to send message");
-      } finally {
-        btn.disabled = false;
-      }
-    });
-</script>
 
 </body>
 </html>
